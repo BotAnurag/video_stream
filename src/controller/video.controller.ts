@@ -2,22 +2,33 @@ import { Request, Response } from "express";
 import path from "node:path";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg";
+import { AppDataSource } from "../config/typeorm.config";
+import { videoEntity } from "../entity/vide.entity";
+import { CreateVideoDto } from "../dto/video.dto";
+
+const videoRepo = AppDataSource.getRepository(videoEntity);
 
 export const uploadVideo = async (req: Request, res: Response) => {
   try {
+    const request = CreateVideoDto.safeParse(req.body);
+
+    if (!request.success) {
+      console.log(request.error);
+      throw request.error;
+    }
     if (!req.file)
       return res
         .status(404)
         .json({ message: { status: 404, message: "image not found" } });
-    console.log();
+
+    const createVideo = await videoRepo.create({});
 
     const file = req.file;
     const chunkDir = path.join(
       __dirname,
-      "../video",
+      "../../video",
       path.parse(req.file.path).name
     );
-    console.log("i am here ");
 
     if (!fs.existsSync(chunkDir)) fs.mkdirSync(chunkDir, { recursive: true });
     ffmpeg(file.path)
@@ -37,10 +48,11 @@ export const uploadVideo = async (req: Request, res: Response) => {
         res.status(500).json({ message: "fail while uploading video" });
       })
       .run();
-  } catch (error) {}
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "fail while uploading the video", error });
+  }
 };
 
-export const getVideos = async (req: Request, res: Response) => {
-  const getVideo = path.join(__dirname, "../video/playlist.m3u8");
-  res;
-};
+export const getVideos = async (req: Request, res: Response) => {};

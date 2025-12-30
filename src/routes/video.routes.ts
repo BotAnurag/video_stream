@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { uploads } from "../utils/videoUpload";
+import { uploads } from "../utils/videoUpload.utils";
 import { uploadVideo } from "../controller/video.controller";
 
 const router = Router();

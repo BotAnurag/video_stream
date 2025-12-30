@@ -3,7 +3,7 @@ import path from "node:path";
 import fs from "fs";
 const store = multer.diskStorage({
   destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../uploads");
+    const dir = path.join(__dirname, "../../uploads");
 
     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
     cb(null, dir);

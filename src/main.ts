@@ -1,15 +1,28 @@
-import express from "express";
-import { Request, Response } from "express";
-import { job } from "./utils/cronjob";
-import videoRouter from "./routes/video.routes";
+import { AppDataSource } from "./config/typeorm.config";
+import app from "./index";
 
-const app = express();
-app.use("/video", videoRouter);
+import dotenv from "dotenv";
 
-app.get("/", (req: Request, res: Response): void => {
-  res.send("i am up bro");
+dotenv.config({
+  path: "./.env",
 });
-job;
-app.listen(3000, () => {
-  console.log("server running");
-});
+
+if (!Number(process.env.APP_PORT)) {
+  console.log(` ⛔ error no port number provided`);
+  process.exit(1);
+}
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log("🛢️    Database connected");
+    const server = app.listen(Number(process.env.APP_PORT!), () => {
+      console.log(`🚀   server is running ${process.env.APP_PORT} `);
+    });
+    server.on("error", (error) => {
+      console.log("🚀❌error", error);
+      return error;
+    });
+  })
+  .catch((error) => {
+    console.error("🚨 error while connecting to database", error);
+  });
