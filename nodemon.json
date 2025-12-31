@@ -2,11 +2,12 @@
   "watch": ["src"],
   "ext": "ts",
   "ignore": [
-    "src/entity/*",
     "src/dto/*",
     "uploads/*",
     "video/*/*",
-    "node_modules/*"
+    "src/queue/*",
+    "node_modules/*",
+    "src/service/*"
   ],
   "exec": "ts-node src/main.ts"
 }

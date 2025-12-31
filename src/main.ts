@@ -1,5 +1,6 @@
 import { AppDataSource } from "./config/typeorm.config";
 import app from "./index";
+import Redis from "ioredis";
 
 import dotenv from "dotenv";
 
@@ -15,6 +16,7 @@ if (!Number(process.env.APP_PORT)) {
 AppDataSource.initialize()
   .then(() => {
     console.log("🛢️    Database connected");
+
     const server = app.listen(Number(process.env.APP_PORT!), () => {
       console.log(`🚀   server is running ${process.env.APP_PORT} `);
     });

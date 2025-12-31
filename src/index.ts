@@ -17,6 +17,7 @@ app.use(
 
 app.use(cors({ origin: "*", credentials: true }));
 
+app.use("/uploads", express.static("uploads"));
 app.use("/video", express.static("video"));
 app.use("/video", videoRouter);
 
