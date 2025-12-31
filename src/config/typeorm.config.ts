@@ -5,7 +5,7 @@ dotenv.config({
 });
 
 import { DataSource } from "typeorm";
-import { videoEntity } from "../entity/vide.entity";
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.HOST,

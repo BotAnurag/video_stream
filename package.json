@@ -4,13 +4,14 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "test": "nodemon --exec ts-node src/main.ts"
+    "test": "nodemon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/fluent-ffmpeg": "^2.1.28",
     "@types/multer": "^2.0.0",
@@ -20,6 +21,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "cron": "^4.4.0",
     "express": "^5.2.1",
     "fluent-ffmpeg": "^2.1.3",

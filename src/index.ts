@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { job } from "./utils/cronjob";
 import videoRouter from "./routes/video.routes";
 import { AppDataSource } from "./config/typeorm.config";
+import cors from "cors";
 
 const app = express();
 
@@ -14,7 +15,9 @@ app.use(
   })
 );
 
-app.use(express.static("uploads"));
+app.use(cors({ origin: "*", credentials: true }));
+
+app.use("/video", express.static("video"));
 app.use("/video", videoRouter);
 
 app.get("/", (req: Request, res: Response): void => {
