@@ -1,9 +1,11 @@
 import express, { urlencoded } from "express";
 import { Request, Response } from "express";
-import { job } from "./utils/cronjob";
+
 import videoRouter from "./routes/video.routes";
-import { AppDataSource } from "./config/typeorm.config";
+import userRouter from "./routes/user.routes";
+
 import cors from "cors";
+import globalErrorHandler from "./middleware/globalErrorHandler.middleware";
 
 const app = express();
 
@@ -20,6 +22,10 @@ app.use(cors({ origin: "*", credentials: true }));
 app.use("/uploads", express.static("uploads"));
 app.use("/video", express.static("video"));
 app.use("/video", videoRouter);
+
+app.use("/user", userRouter);
+
+app.use(globalErrorHandler);
 
 app.get("/", (req: Request, res: Response): void => {
   res.send("i am up bro");

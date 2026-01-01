@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import path from "node:path";
-import fs from "fs";
 
 import { AppDataSource } from "../config/typeorm.config";
 import { videoEntity } from "../entity/video.entity";
 import { CreateVideoDto } from "../dto/video.dto";
-import { videoQueue } from "../queue/video.queue";
+import { ApiError } from "../utils/apierror.utils";
+
 import { VideoService } from "../service/video.service";
 const videoService = new VideoService();
 
