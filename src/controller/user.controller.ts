@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { createUserDto } from "../dto/user.dto";
+import { createUserDto, loginUserDto } from "../dto/user.dto";
 import { ApiError } from "../utils/apierror.utils";
-import { ZodError } from "zod";
+
 import asyncHandler from "express-async-handler";
 
 import * as z from "zod";
 import { AppDataSource } from "../config/typeorm.config";
 import { UserEntity } from "../entity/user.entity";
+
+import bcrypt from "bcryptjs";
 
 const userRepo = AppDataSource.getRepository(UserEntity);
 
@@ -18,9 +20,43 @@ export const createUser = asyncHandler(
     if (!reqBody.success) {
       throw new ApiError(400, "invalid request", reqBody.error.issues);
     }
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(reqBody.data.password, salt);
 
-    const createUser = userRepo.create({ ...reqBody.data });
+    const createUser = userRepo.create({
+      userName: reqBody.data.userName,
+      email: reqBody.data.email,
+      password: hashPassword,
+    });
     const saveUser = await userRepo.save(createUser);
-    res.status(200).json({ message: `user created`, data: saveUser });
+    const {
+      password,
+      createdAt,
+      deletedAt,
+      updatedAt,
+      ...userWithoutPassword
+    } = saveUser;
+    res
+      .status(200)
+      .json({ message: `user created`, data: userWithoutPassword });
+  }
+);
+
+export const logInUser = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const reqBody = loginUserDto.safeParse(req.body);
+    if (!reqBody.success)
+      throw new ApiError(400, "invalid Input", reqBody.error.issues);
+    const user = await userRepo.findOne({
+      where: { email: reqBody.data?.email },
+    });
+    if (!user) throw new ApiError(404, "invalid email or password");
+
+    const comparePassword = await bcrypt.compare(
+      reqBody.data.password,
+      user.password
+    );
+    if (!comparePassword) throw new ApiError(404, "invalid email or password");
+    res.status(200).json({ message: "login success", data: user });
   }
 );
