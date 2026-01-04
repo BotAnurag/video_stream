@@ -15,4 +15,7 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   password!: string;
+
+  @Column({ default: "1080p" })
+  quality!: string;
 }

@@ -4,6 +4,7 @@ import { ApiError } from "../utils/apierror.utils";
 
 import asyncHandler from "express-async-handler";
 
+import jwt from "jsonwebtoken";
 import * as z from "zod";
 import { AppDataSource } from "../config/typeorm.config";
 import { UserEntity } from "../entity/user.entity";
@@ -57,6 +58,24 @@ export const logInUser = asyncHandler(
       user.password
     );
     if (!comparePassword) throw new ApiError(404, "invalid email or password");
-    res.status(200).json({ message: "login success", data: user });
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "2h",
+      }
+    );
+
+    res
+      .status(200)
+      .cookie("accesstoken", token, options)
+      .json({ message: "login success", name: user.userName, token });
   }
 );

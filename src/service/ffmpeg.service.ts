@@ -50,12 +50,12 @@ export default async function processVideoToHLS(file: string) {
           "-hls_flags independent_segments",
           "-start_number 0",
         ])
-        .output(path.join(variantDir, "index.m3u8"))
+        .output(path.join(variantDir, "playlist.m3u8"))
         .on("end", () => {
           console.log(`Finished ${v.name}`);
           variantPaths.push({
             name: v.name,
-            path: `/video/${Pathname}/${v.name}/index.m3u8`,
+            path: `/video/${Pathname}/${v.name}/playlist.m3u8`,
           });
           resolve();
         })
@@ -67,7 +67,7 @@ export default async function processVideoToHLS(file: string) {
       `#EXT-X-STREAM-INF:BANDWIDTH=${v.bitrate * 1000},RESOLUTION=${v.width}x${
         v.height
       }`,
-      `${v.name}/index.m3u8`
+      `${v.name}/playlist.m3u8`
     );
   }
 
