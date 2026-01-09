@@ -22,6 +22,12 @@ export class videoEntity extends BaseEntity {
   @Column()
   masterPlaylist!: string;
 
+  @Column()
+  thumbnail!: string;
+
   @Column({ type: "json", nullable: true })
   resolution?: { name: string; path: string }[];
+
+  @Column()
+  duration!: string;
 }

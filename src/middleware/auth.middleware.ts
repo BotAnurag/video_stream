@@ -11,18 +11,19 @@ export const verifyToken = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
     const token =
       req.cookies || req.header("Authorization")?.replace("Bearer ", "");
+
     if (!token) throw new ApiError(404, "token unavailable");
     const decodeToken = jwt.verify(
       token,
       process.env.JWT_SECRET!
     ) as jwt.JwtPayload;
-    console.log(decodeToken.data.id);
 
     const user = await userRepo.findOneOrFail({
       where: {
-        id: decodeToken.data.id,
+        id: decodeToken.id,
       },
     });
+    if (!user) throw new ApiError(404, "user not found please login again ");
 
     const { password, ...userWithoutPassword } = user;
 
